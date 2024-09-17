@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.hiltAndroidPlugin)
+    alias(libs.plugins.kotlinKapt)
 }
 
 android {
@@ -34,9 +36,35 @@ android {
 
 dependencies {
 
-    implementation libs.androidx.core.ktx
-    implementation libs.androidx.appcompat
-    implementation libs.material
+    // AndroidX
+    implementation libs.bundles.androidx
+
+
+    //Lifecycle
+    implementation libs.bundles.lifecycle
+
+
+    //Navigation
+    implementation libs.bundles.navigation
+
+    //Hilt
+    implementation libs.hiltAndroid
+    kapt libs.hiltCompiler
+
+    //Logging
+    implementation libs.timber
+
+
+    //Networking
+    implementation libs.bundles.networking
+    implementation(libs.prettyLogging) { exclude group: 'org.json', module: 'json' }
+
+    //Local db
+    implementation libs.bundles.room
+    kapt libs.roomCompiler
+
+
+    //Testing
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit
     androidTestImplementation libs.androidx.espresso.core
