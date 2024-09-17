@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/postsListFragment">
+
+    <fragment
+        android:id="@+id/postsListFragment"
+        tools:layout="@layout/fragment_posts_list"
+        android:name="me.melkopisi.payskytask.presentation.posts_list.PostsListFragment"
+        android:label="PostsListFragment" />
+</navigation>
