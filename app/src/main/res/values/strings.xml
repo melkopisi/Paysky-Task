@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PaySky Task</string>
+    <string name="add_post">Add Post</string>
+    <string name="add_title">Add Title</string>
+    <string name="add_desc">Add Description</string>
+    <string name="edit_post">Edit Post</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 </resources>

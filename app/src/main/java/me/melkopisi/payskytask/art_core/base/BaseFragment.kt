@@ -1,4 +1,4 @@
-package me.melkopisi.payskytask.art_core
+package me.melkopisi.payskytask.art_core.base
 
 import android.os.Bundle
 import android.view.LayoutInflater

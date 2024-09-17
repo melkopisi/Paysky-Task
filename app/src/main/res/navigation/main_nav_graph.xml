@@ -8,6 +8,6 @@
     <fragment
         android:id="@+id/postsListFragment"
         tools:layout="@layout/fragment_posts_list"
-        android:name="me.melkopisi.payskytask.presentation.posts_list.PostsListFragment"
+        android:name="me.melkopisi.payskytask.presentation.posts_list.fragment.PostsListFragment"
         android:label="PostsListFragment" />
 </navigation>
