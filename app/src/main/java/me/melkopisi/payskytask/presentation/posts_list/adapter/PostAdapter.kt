@@ -7,27 +7,27 @@ import com.kashier.art_core.base.BaseRecyclerAdapter
 import com.kashier.art_core.base.BaseViewHolder
 import me.melkopisi.payskytask.core.Consumer
 import me.melkopisi.payskytask.databinding.ItemPostBinding
-import me.melkopisi.payskytask.presentation.posts_list.adapter.models.PostUiModel
+import me.melkopisi.payskytask.presentation.posts_list.adapter.models.PostsUiModel
 
-class PostAdapter : BaseRecyclerAdapter<PostUiModel, ItemPostBinding, PostAdapter.PostViewHolder>(object : DiffUtil.ItemCallback<PostUiModel>() {
-    override fun areItemsTheSame(oldItem: PostUiModel, newItem: PostUiModel): Boolean {
+class PostAdapter : BaseRecyclerAdapter<PostsUiModel, ItemPostBinding, PostAdapter.PostViewHolder>(object : DiffUtil.ItemCallback<PostsUiModel>() {
+    override fun areItemsTheSame(oldItem: PostsUiModel, newItem: PostsUiModel): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: PostUiModel, newItem: PostUiModel): Boolean {
+    override fun areContentsTheSame(oldItem: PostsUiModel, newItem: PostsUiModel): Boolean {
         return oldItem == newItem
     }
 
 }) {
 
-    private var itemEditCallback: Consumer<PostUiModel?>? = null
-    private var itemDeleteCallback: Consumer<PostUiModel?>? = null
+    private var itemEditCallback: Consumer<PostsUiModel?>? = null
+    private var itemDeleteCallback: Consumer<PostsUiModel?>? = null
 
     class PostViewHolder(
         private val binding: ItemPostBinding,
-        private val editCallback: Consumer<PostUiModel?>?,
-        private val deleteCallback: Consumer<PostUiModel?>?
-    ) : BaseViewHolder<PostUiModel, ItemPostBinding>(binding) {
+        private val editCallback: Consumer<PostsUiModel?>?,
+        private val deleteCallback: Consumer<PostsUiModel?>?
+    ) : BaseViewHolder<PostsUiModel, ItemPostBinding>(binding) {
         override fun bind() {
             with(binding) {
 
@@ -45,12 +45,12 @@ class PostAdapter : BaseRecyclerAdapter<PostUiModel, ItemPostBinding, PostAdapte
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder =
         PostViewHolder(ItemPostBinding.inflate(LayoutInflater.from(parent.context), parent, false), itemEditCallback, itemDeleteCallback)
 
-    fun onItemEdit(callback: Consumer<PostUiModel?>?) {
+    fun onItemEdit(callback: Consumer<PostsUiModel?>?) {
         this.itemEditCallback = callback
 
     }
 
-    fun onItemDelete(callback: Consumer<PostUiModel?>?) {
+    fun onItemDelete(callback: Consumer<PostsUiModel?>?) {
         this.itemDeleteCallback = callback
     }
 }
