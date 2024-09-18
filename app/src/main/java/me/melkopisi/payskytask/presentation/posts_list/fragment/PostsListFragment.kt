@@ -55,9 +55,9 @@ class PostsListFragment : BaseFragment<FragmentPostsListBinding>(FragmentPostsLi
                 binding.srPosts.isRefreshing = false
                 binding.progressCircular.isVisible = false
                 Timber.e("error is ${state.message}")
-                Snackbar.make(binding.root, state.message.orEmpty(), Snackbar.LENGTH_INDEFINITE).setAction("retry") {
+                Snackbar.make(binding.fabAddPost, state.message.orEmpty(), Snackbar.LENGTH_INDEFINITE).setAction("retry") {
                     viewModel.getPosts()
-                }.show()
+                }.setAnchorView(binding.fabAddPost).show()
             }
         }
     }
