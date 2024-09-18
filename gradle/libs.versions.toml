@@ -7,6 +7,7 @@ androidxAppcompat = "1.7.0"
 androidxFragment = "1.8.3"
 googleMaterial = "1.12.0"
 constraintLayout = "2.1.4"
+swipeToRefresh = "1.1.0"
 
 lifecycle = "2.8.5"
 
@@ -21,7 +22,10 @@ prettyLogging = "3.1.0"
 roomVersion = "2.6.1"
 
 hilt = "2.48"
-safeArgs = "2.8.0"
+
+workManager = "2.9.1"
+hiltWork = "1.2.0"
+androidxHilt = "1.2.0"
 
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -42,8 +46,11 @@ lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtim
 navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
 navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
 
+swipeToRefresh = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swipeToRefresh" }
+
 hiltAndroid = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hiltCompiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "androidxHilt" }
 
 
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
@@ -59,23 +66,26 @@ roomRuntime = { module = "androidx.room:room-runtime", version.ref = "roomVersio
 roomCompiler = { module = "androidx.room:room-compiler", version.ref = "roomVersion" }
 roomKtx = { module = "androidx.room:room-ktx", version.ref = "roomVersion" }
 
+workManager = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager" }
+workMultiProcess = { module = "androidx.work:work-multiprocess", version.ref = "workManager" }
+hiltWorker = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 
 [bundles]
 # Define bundles/groups of libraries
-androidx = ["androidx-appcompat", "androidx-coreKtx", "androidx-constraintLayout", "google-material", "androidx-fragment"]
+androidx = ["androidx-appcompat", "androidx-coreKtx", "androidx-constraintLayout", "google-material", "androidx-fragment", "swipeToRefresh"]
 lifecycle = ["lifecycle-livedata-ktx", "lifecycle-viewmodel-ktx", "lifecycle-runtime-ktx"]
 navigation = ["navigation-fragment", "navigation-ui"]
 networking = ["retrofit", "retrofit-converters-gson", "retrofit-adapter", "okhttp", "okhttp-interceptor"]
 room = ["roomRuntime", "roomKtx"]
+worker = ["workManager", "workMultiProcess", "hiltWorker"]
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinKapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 hiltAndroidPlugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-safeArgs = { id = "androidx.navigation.safeargs", version.ref = "safeArgs" }
-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 

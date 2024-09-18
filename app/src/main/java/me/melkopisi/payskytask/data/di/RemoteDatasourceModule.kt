@@ -11,6 +11,6 @@ import me.melkopisi.payskytask.domain.remote.datasource.RemoteDS
 @InstallIn(SingletonComponent::class)
 abstract class RemoteDatasourceModule {
     @Binds
-    abstract fun bindPosDataSource(remoteDSImpl: RemoteDSImpl): RemoteDS
+    abstract fun bindRemoteDataSource(remoteDS: RemoteDSImpl): RemoteDS
 
 }

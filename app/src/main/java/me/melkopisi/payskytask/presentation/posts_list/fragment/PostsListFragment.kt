@@ -1,8 +1,9 @@
 package me.melkopisi.payskytask.presentation.posts_list.fragment
 
 import android.view.WindowManager
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import me.melkopisi.payskytask.R
 import me.melkopisi.payskytask.art_core.base.BaseFragment
@@ -12,7 +13,7 @@ import me.melkopisi.payskytask.art_core.extensions.showKeyboard
 import me.melkopisi.payskytask.databinding.DialogPostOperationsBinding
 import me.melkopisi.payskytask.databinding.FragmentPostsListBinding
 import me.melkopisi.payskytask.presentation.posts_list.adapter.PostAdapter
-import me.melkopisi.payskytask.presentation.posts_list.adapter.models.PostsUiModel
+import me.melkopisi.payskytask.presentation.posts_list.adapter.models.PostUiModel
 import me.melkopisi.payskytask.presentation.posts_list.viewmodel.PostsViewModel
 import timber.log.Timber
 
@@ -24,7 +25,7 @@ class PostsListFragment : BaseFragment<FragmentPostsListBinding>(FragmentPostsLi
 
     override fun setupViews() {
         binding.fabAddPost.setOnClickListener { setupAddPostDialog() }
-        setPostsList()
+        setPostsRecyclerView()
         observeOnScreenState()
         viewModel.getPosts()
 
@@ -36,24 +37,42 @@ class PostsListFragment : BaseFragment<FragmentPostsListBinding>(FragmentPostsLi
 
     private fun observeOnPosts(state: PostsViewModel.ScreenState) {
         when (state) {
-            is PostsViewModel.ScreenState.Loading -> Toast.makeText(requireContext(), "Loading", Toast.LENGTH_SHORT).show()
-            is PostsViewModel.ScreenState.AddPostSuccess -> TODO()
-            is PostsViewModel.ScreenState.DeletePostSuccess -> TODO()
-            is PostsViewModel.ScreenState.Failure -> Toast.makeText(requireContext(), state.message, Toast.LENGTH_SHORT).show()
-            is PostsViewModel.ScreenState.GetPostsSuccess -> postAdapter.submitList(state.posts)
-            is PostsViewModel.ScreenState.UpdatePostSuccess -> TODO()
+            is PostsViewModel.ScreenState.Loading -> binding.progressCircular.isVisible = true
+            is PostsViewModel.ScreenState.GetPostsSuccess -> {
+                binding.srPosts.isRefreshing = false
+                binding.progressCircular.isVisible = false
+                postAdapter.submitList(state.posts)
+            }
+
+            is PostsViewModel.ScreenState.PostAddedSuccessfully -> {
+                binding.srPosts.isRefreshing = false
+                binding.progressCircular.isVisible = false
+                postAdapter.submitList(state.posts)
+                binding.root.post { binding.rvPosts.scrollToPosition(postAdapter.itemCount) }
+            }
+
+            is PostsViewModel.ScreenState.Failure -> {
+                binding.srPosts.isRefreshing = false
+                binding.progressCircular.isVisible = false
+                Timber.e("error is ${state.message}")
+                Snackbar.make(binding.root, state.message.orEmpty(), Snackbar.LENGTH_INDEFINITE).setAction("retry") {
+                    viewModel.getPosts()
+                }.show()
+            }
         }
     }
 
-    private fun setPostsList() {
+    private fun setPostsRecyclerView() {
+        binding.srPosts.setOnRefreshListener {
+            viewModel.getPosts()
+        }
         binding.rvPosts.adapter = postAdapter
-        postAdapter.onItemEdit {
-            setupEditPostDialog(it)
-            Timber.e("item edited $it")
+        postAdapter.onItemEdit { post ->
+            post?.let { setupEditPostDialog(it) }
         }
 
-        postAdapter.onItemDelete {
-            Timber.e("item deleted $it")
+        postAdapter.onItemDelete { post ->
+            post?.let { viewModel.deletePost(it.id) }
         }
     }
 
@@ -67,8 +86,7 @@ class PostsListFragment : BaseFragment<FragmentPostsListBinding>(FragmentPostsLi
                 btnPositive.text = getString(R.string.add_post)
                 etDesc.onDone { btnPositive.performClick() }
                 btnPositive.setOnClickListener {
-
-                    //todo add post
+                    viewModel.addPost(PostUiModel(postAdapter.itemCount.plus(1), etTitle.text.toString(), etDesc.text.toString()))
                     dialog.dismiss()
 
                 }
@@ -86,18 +104,18 @@ class PostsListFragment : BaseFragment<FragmentPostsListBinding>(FragmentPostsLi
     }
 
     @Suppress("DEPRECATION")
-    private fun setupEditPostDialog(postsUiModel: PostsUiModel?) {
+    private fun setupEditPostDialog(postUiModel: PostUiModel) {
         val postOperationsDialogBinding = DialogPostOperationsBinding.inflate(layoutInflater)
 
         requireContext().setupDialog(postOperationsDialogBinding.root) { dialog ->
             with(postOperationsDialogBinding) {
-                etTitle.setText(postsUiModel?.title)
-                etDesc.setText(postsUiModel?.desc)
+                etTitle.setText(postUiModel.title)
+                etDesc.setText(postUiModel.desc)
                 tvTitle.text = getString(R.string.edit_post)
                 btnPositive.text = getString(R.string.edit_post)
                 etDesc.onDone { btnPositive.performClick() }
                 btnPositive.setOnClickListener {
-
+                    viewModel.updatePost(postUiModel.id, postUiModel.copy(title = etTitle.text.toString(), desc = etDesc.text.toString()))
                     //todo add post
                     dialog.dismiss()
 

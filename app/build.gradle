@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    alias(libs.plugins.hiltAndroidPlugin)
     alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.hiltAndroidPlugin)
 }
 
 android {
@@ -36,6 +36,11 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    kapt {
+        correctErrorTypes = true
+    }
+
 }
 
 dependencies {
@@ -54,6 +59,7 @@ dependencies {
     //Hilt
     implementation libs.hiltAndroid
     kapt libs.hiltCompiler
+    kapt libs.androidx.hilt.compiler
 
     //Logging
     implementation libs.timber
@@ -67,6 +73,8 @@ dependencies {
     implementation libs.bundles.room
     kapt libs.roomCompiler
 
+    //work manager
+    implementation libs.bundles.worker
 
     //Testing
     testImplementation libs.junit

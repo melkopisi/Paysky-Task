@@ -11,7 +11,8 @@ import me.melkopisi.payskytask.domain.usecases.AddPostUseCase
 import me.melkopisi.payskytask.domain.usecases.DeletePostUseCase
 import me.melkopisi.payskytask.domain.usecases.GetPostsUseCase
 import me.melkopisi.payskytask.domain.usecases.UpdatePostUseCase
-import me.melkopisi.payskytask.presentation.posts_list.adapter.models.PostsUiModel
+import me.melkopisi.payskytask.presentation.posts_list.adapter.models.PostUiModel
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,36 +30,38 @@ class PostsViewModel @Inject constructor(
         viewModelScope.launch {
             getPostsUseCase()
                 .catch { throwable ->
-                    ScreenState.Failure(throwable.message)
+                    _screenState.value = ScreenState.Failure(throwable.message)
+                    Timber.e(throwable.message)
                 }
                 .collect { posts ->
+                    Timber.e("posts size is ${posts.size}")
                     _screenState.value = ScreenState.GetPostsSuccess(posts.map { it.toUiModel() })
                 }
         }
     }
 
-    fun addPost(post: PostsUiModel) {
+    fun addPost(post: PostUiModel) {
         _screenState.value = ScreenState.Loading
         viewModelScope.launch {
             addPostUseCase(post.toModel())
                 .catch { throwable ->
-                    ScreenState.Failure(throwable.message)
+                    _screenState.value = ScreenState.Failure(throwable.message)
                 }
-                .collect { post ->
-                    _screenState.value = ScreenState.AddPostSuccess(post.toUiModel())
+                .collect { posts ->
+                    _screenState.value = ScreenState.PostAddedSuccessfully(posts.map { it.toUiModel() })
                 }
         }
     }
 
-    fun updatePost(postId: Int, post: PostsUiModel) {
+    fun updatePost(postId: Int, post: PostUiModel) {
         _screenState.value = ScreenState.Loading
         viewModelScope.launch {
             updatePostUseCase(postId, post.toModel())
                 .catch { throwable ->
-                    ScreenState.Failure(throwable.message)
+                    _screenState.value = ScreenState.Failure(throwable.message)
                 }
-                .collect { post ->
-                    _screenState.value = ScreenState.UpdatePostSuccess(post.toUiModel())
+                .collect { posts ->
+                    _screenState.value = ScreenState.GetPostsSuccess(posts.map { it.toUiModel() })
                 }
         }
     }
@@ -68,10 +71,10 @@ class PostsViewModel @Inject constructor(
         viewModelScope.launch {
             deletePostUseCase(postId)
                 .catch { throwable ->
-                    ScreenState.Failure(throwable.message)
+                    _screenState.value = ScreenState.Failure(throwable.message)
                 }
-                .collect {
-                    ScreenState.DeletePostSuccess(postId)
+                .collect { posts ->
+                    _screenState.value = ScreenState.GetPostsSuccess(posts.map { it.toUiModel() })
                 }
         }
     }
@@ -79,10 +82,8 @@ class PostsViewModel @Inject constructor(
 
     sealed interface ScreenState {
         object Loading : ScreenState
-        data class GetPostsSuccess(val posts: List<PostsUiModel>) : ScreenState
-        data class AddPostSuccess(val post: PostsUiModel) : ScreenState
-        data class UpdatePostSuccess(val post: PostsUiModel) : ScreenState
-        data class DeletePostSuccess(val postId: Int) : ScreenState
+        data class GetPostsSuccess(val posts: List<PostUiModel>) : ScreenState
+        data class PostAddedSuccessfully(val posts: List<PostUiModel>) : ScreenState
         data class Failure(val message: String?) : ScreenState
     }
 }

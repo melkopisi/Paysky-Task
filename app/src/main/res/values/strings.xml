@@ -7,4 +7,6 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="title_empty">Title is Empty</string>
+    <string name="desc_empty">Description is Empty</string>
 </resources>
